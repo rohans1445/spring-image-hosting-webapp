@@ -1,0 +1,9 @@
+<div class="grid-container">
+    <div class="grid-item grid-item-1" *ngFor="let img of galleryItems">
+        <div class="grid-item-content">
+            <img [src]="" (click)="onImageClickInGallery(img)">
+            <p>{{img.title + " | " + img.uploadedBy}}</p>
+        </div>
+    </div>
+</div>
+<app-viewer *ngIf="isViewing" [image]="viewingImage" (modalClose)="onModalClose()"></app-viewer>

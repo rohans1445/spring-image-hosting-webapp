@@ -1,0 +1,28 @@
+<div>
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div>
+            <label class="form-label pb-0 mb-0"><small class="fw-bold text-muted">Username</small></label>
+            <div class="input-group pb-3">
+                <span class="input-group-text text-custom-orange"><i class="bi bi-person-circle"></i></span>
+                <input type="text" id="username" name="username" formControlName="username" class="form-control form-control-custom-orange" placeholder="Username">
+            </div>
+        </div>
+        <div>
+            <label class="form-label pb-0 mb-0"><small class="fw-bold text-muted">Password</small></label>
+            <div class="input-group">
+                <span class="input-group-text text-custom-orange"><i class="bi bi-key-fill"></i></span>
+                <input type="password" id="password" name="password" formControlName="password" class="form-control form-control-custom-orange" placeholder="Password">
+            </div>
+        </div>
+        <div class="d-grid text-center pt-4">
+            <button type="submit" class="btn btn-custom-orange  p-2" style="border-radius: 0.5rem !important;" [disabled]="!loginForm.valid || isLoading">
+                {{isLoading ? 'Logging in' : 'Login'}}
+                <span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                <span *ngIf="isError" class="bi bi-exclamation-circle" role="status" aria-hidden="true"></span>
+            </button>
+        </div>
+    </form>
+    <div>
+        Logged in as: {{user}}
+    </div>
+</div>

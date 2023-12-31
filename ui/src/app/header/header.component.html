@@ -1,0 +1,24 @@
+<nav class="nav-container">
+    <div class="nav-item nav-item-name">ImageHost</div>
+    <div class="nav-item nav-item-navbar">
+        <a class="link" routerLink="/home" routerLinkActive="link-active">Home</a>
+        <a class="link" routerLink="/my-images" routerLinkActive="link-active">My Images</a>
+        <a class="link" routerLink="/upload" routerLinkActive="link-active">Upload Image</a>
+    </div>
+    <div class="nav-item nav-item-logininfo">
+        <div class="action-button" *ngIf="!isLoggedIn">Login</div>
+        <div class="action-button" *ngIf="!isLoggedIn">Sign up</div>
+        <div *ngIf="isLoggedIn" class="user-storage-info">
+            <div style="display: flex;">
+                <div style="align-self: center;">Storage</div>
+                <div style="font-size: 0.8rem; margin-left: 5px; align-self: center;">{{occupiedSpace + " of " + freeSpace + " used"}}</div>
+            </div>
+            <div class="storage-bar">
+                <div class="occupied-storage-bar" [ngStyle]="{width: ((this.currentUser.assignedCloudStorage! - this.currentUser.freeSpaceAvailable!)/this.currentUser.assignedCloudStorage!) * 100 + '%'}"></div>
+                <div class="free-storage-bar" [ngStyle]="{width: (this.currentUser.freeSpaceAvailable!/this.currentUser.assignedCloudStorage!) * 100 + '%'}"></div>
+            </div>
+        </div>
+        <div *ngIf="isLoggedIn" style="align-self: center;" class="link">{{currentUser.username}}</div>
+        <a class="action-button" *ngIf="isLoggedIn" (click)="onLogout()">Logout</a>
+    </div>
+</nav>

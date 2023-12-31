@@ -1,0 +1,18 @@
+<div class="backdrop" (click)="onClickBackdrop()"></div>
+<div class="modal">
+    <div class="modal-content">
+        <div class="left-content">
+            <!-- <img src="https://fastly.picsum.photos/id/976/600/200.jpg?hmac=oXjlUJW2RKeXgR87sOPLuD3AdAHp4BUHmObhGlPq02E"> -->
+            <img [src] = "image.url">
+        </div>
+        <div class="right-content">
+            <h3>{{image.title}}</h3>
+            <p style="padding: 0px; margin: 0px;">Uploaded by: {{image.uploadedBy}}</p>
+            <p style="padding: 0px; margin: 0px;">Uploaded on: {{image.uploadedOn}}</p>
+            <p style="padding: 0px; margin: 0px;">Size: {{image.size}}</p>
+            <button type="button">Public</button>
+            <button type="button">Private</button>
+            <button type="button">Delete</button>
+        </div>
+    </div>
+</div>

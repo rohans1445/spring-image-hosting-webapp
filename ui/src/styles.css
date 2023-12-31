@@ -1,0 +1,13 @@
+/* You can add global styles to this file, and also import other style files */
+
+:root {
+    --primary: teal;
+    --accent: rgb(240,240,240);
+  }
+
+html, body {
+    margin: 0px;
+    padding: 0px;
+    background-color: #292929;
+    color: rgb(240, 240, 240);
+}
