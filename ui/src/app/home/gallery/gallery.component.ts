@@ -24,9 +24,9 @@ export class GalleryComponent implements OnInit {
 
     this.loadImages();
       
-    this.userService.storageUpdated.subscribe({
+    this.imageService.imageChange.subscribe({
       next: res => {
-        console.log('storage updated');
+        console.log('storage updated - gallery');
         this.loadImages();
       }
     })

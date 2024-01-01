@@ -31,7 +31,7 @@ export class HeaderComponent implements OnInit {
     this.userService.storageUpdated.subscribe({
       next: res => {
         this.authService.fetchCurrentUserDetailsAndSetLogin();
-
+        console.log('storage updated - header')
         // Will only run when fetchCurrentUserDetailsAndSetLogin() finishes executing
         this.authService.currentUserWasUpdated.subscribe({
           next: res => {

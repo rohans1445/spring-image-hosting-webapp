@@ -6,6 +6,7 @@ import * as moment from 'moment';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { User } from '../model/user.model';
+import { CookieService } from 'ngx-cookie-service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,8 @@ import { User } from '../model/user.model';
 export class AuthService {
 
   constructor(private http: HttpClient, 
-    private router: Router) { }
+    private router: Router,
+    private cookieService: CookieService) { }
 
 
     currentUser: User = new User();
@@ -30,27 +32,27 @@ export class AuthService {
     return this.http.post<any>(`${environment.baseUrl}/auth/login`, usernamePassword);
   }
 
-  private fetchCurrentUserDetails(): Observable<User>{
+  fetchCurrentUserDetails(): Observable<User>{
     return this.http.get<User>(`${environment.baseUrl}/user/me`);
   }
 
   fetchCurrentUserDetailsAndSetLogin() {
     this.fetchCurrentUserDetails().subscribe({
       next: res => {
-        localStorage.setItem('currentUser', JSON.stringify(res));
+        this.cookieService.set('currentUser', JSON.stringify(res));
         this.currentUserWasUpdated.next(true);
       }
     })
   }
 
   isLoggedIn(): boolean{
-    if(localStorage.getItem('token') === null) return false;
+    if(!this.cookieService.get('token')) return false;
     return !this.isTokenExpired();
   }
 
   getExpiration(){
     try {
-      const bearerToken = localStorage.getItem('token');
+      const bearerToken = this.cookieService.get('token');
       const decodedJWT: {iat: number, sub: string, exp: number } = jwtDecode(bearerToken!);
       return moment.unix(decodedJWT.exp);
     } catch(error) {
@@ -60,8 +62,8 @@ export class AuthService {
   }
 
   getCurrentUser(): User{ 
-    if(localStorage.getItem('currentUser') !== null){
-      this.currentUser = JSON.parse(localStorage.getItem('currentUser')!);
+    if(this.cookieService.check('currentUser')){
+      this.currentUser = JSON.parse(this.cookieService.get('currentUser')!);
       return this.currentUser;
     } else {
       console.error('Error getting current user.');
@@ -70,7 +72,7 @@ export class AuthService {
   }
   
   isTokenExpired(){
-    const bearerToken = localStorage.getItem('token');
+    const bearerToken = this.cookieService.get('token');
     if(bearerToken === null){
       return true;
     }
@@ -80,12 +82,12 @@ export class AuthService {
   }
 
   logout() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('currentUser');
+    this.cookieService.delete('token');
+    this.cookieService.delete('currentUser');
   }
 
   getAuthHeader() {
-    const bearerToken = localStorage.getItem('token');
+    const bearerToken = this.cookieService.get('token');
     return new HttpHeaders({
       'Authorization': `Bearer ${bearerToken}`
     });

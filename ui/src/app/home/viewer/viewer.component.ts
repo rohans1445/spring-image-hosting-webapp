@@ -13,7 +13,8 @@ import { formatBytes } from 'src/app/util/helpers';
 export class ViewerComponent implements OnInit {
 
   constructor(private userService: UserService,
-    private auth: AuthService) { }
+    private auth: AuthService,
+    private imageService: ImageService) { }
 
   fileSize: string = '';
   
@@ -37,6 +38,7 @@ export class ViewerComponent implements OnInit {
       next: res => {
         this.onClickBackdrop();
         this.userService.storageUpdated.next(true);
+        this.imageService.imageChange.next(true);
       }
     });
   }
@@ -47,6 +49,7 @@ export class ViewerComponent implements OnInit {
     this.userService.updateImage(this.image.id!, visibility).subscribe({
       next: res => {
         this.image.visibility = visibility;
+        this.imageService.imageChange.next(true);
       }
     });    
 

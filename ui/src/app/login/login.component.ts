@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { User } from '../model/user.model';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-login',
@@ -17,7 +18,8 @@ export class LoginComponent implements OnInit {
 
   constructor(private authService: AuthService,
     private router: Router,
-    private route: ActivatedRoute) { }
+    private route: ActivatedRoute,
+    private cookieService: CookieService) { }
 
   ngOnInit(): void {
     this.loginForm = new FormGroup({
@@ -36,10 +38,12 @@ export class LoginComponent implements OnInit {
     }).subscribe({
       next: res => {
         this.isLoading = false;
-        localStorage.setItem('token', res.token);
-        
-        this.authService.fetchCurrentUserDetailsAndSetLogin();
-        this.router.navigate(['/home']);
+        this.cookieService.set('token', res.token);
+
+        this.authService.fetchCurrentUserDetails().subscribe((res) => {
+          this.cookieService.set('currentUser', JSON.stringify(res));
+          this.router.navigate(['/home']);
+        });
 
       },
       error: res => {

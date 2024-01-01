@@ -3,11 +3,14 @@ import { Injectable } from '@angular/core';
 import { AuthService } from './auth.service';
 import { Image } from '../model/image.model';
 import { environment } from 'src/environments/environment';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ImageService {
+
+  imageChange: Subject<boolean> = new Subject<boolean>();
 
   constructor(private http: HttpClient,
     private auth: AuthService) { }
