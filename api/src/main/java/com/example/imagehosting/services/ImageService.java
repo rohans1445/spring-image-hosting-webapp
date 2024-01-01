@@ -1,7 +1,5 @@
 package com.example.imagehosting.services;
 
-import com.example.imagehosting.config.AppConstants;
-import com.example.imagehosting.dto.ImageReadDTO;
 import com.example.imagehosting.dto.ImageUploadDTO;
 import com.example.imagehosting.entity.Image;
 import com.example.imagehosting.entity.User;
@@ -9,20 +7,18 @@ import com.example.imagehosting.exception.InvalidInputException;
 import com.example.imagehosting.repository.ImageRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static com.example.imagehosting.config.AppConstants.S3_BUCKET_NAME;
 
@@ -35,27 +31,12 @@ public class ImageService {
     private final ImageRepository imageRepository;
     private final UserService userService;
 
-    public Image uploadImageToS3(ImageUploadDTO imageUploadDTO){
+    public Image saveImage(ImageUploadDTO imageUploadDTO){
         String uuid = UUID.randomUUID().toString();
         Image image = new Image();
         User currentUser = userService.getCurrentUser();
 
-        PutObjectRequest request = PutObjectRequest.builder()
-                .key(uuid)
-                .contentType(imageUploadDTO.getFile().getContentType())
-                .bucket("spring-image-bucket-2922")
-                .build();
-
-        log.info("PutObjectRequest = {}", request);
-        PutObjectResponse putObjectResponse;
-
-        try{
-            putObjectResponse = s3.putObject(request, RequestBody.fromBytes(imageUploadDTO.getFile().getBytes()));
-        } catch (Exception e){
-            throw new RuntimeException(e);
-        }
-
-        log.info("PutObjectResponse = {}", putObjectResponse);
+        uploadImageToS3(uuid, imageUploadDTO);
 
         image.setS3Identifier(uuid);
         image.setTitle(imageUploadDTO.getFile().getOriginalFilename());
@@ -69,6 +50,56 @@ public class ImageService {
         return saveImageMetadata(image);
     }
 
+    private void uploadImageToS3(String uuid, ImageUploadDTO imageUploadDTO){
+
+        uploadThumbnailToS3(uuid, imageUploadDTO);
+
+        PutObjectRequest request = PutObjectRequest.builder()
+                .key(uuid)
+                .contentType(imageUploadDTO.getFile().getContentType())
+                .bucket(S3_BUCKET_NAME)
+                .build();
+
+        log.info("imageRequest = {}", request);
+        PutObjectResponse putObjectResponse;
+
+        try{
+            putObjectResponse = s3.putObject(request, RequestBody.fromBytes(imageUploadDTO.getFile().getBytes()));
+        } catch (Exception e){
+            throw new RuntimeException(e);
+        }
+
+        log.info("PutObjectResponse = {}", putObjectResponse);
+
+
+    }
+
+    private void uploadThumbnailToS3(String uuid, ImageUploadDTO imageUploadDTO){
+        byte[] thumbnail;
+
+        try{
+            thumbnail = generateThumbnail(imageUploadDTO);
+        } catch (Exception e){
+            throw new RuntimeException("Something went wrong while generating thumbnails. E = " + e);
+        }
+
+        PutObjectRequest thumbnailReq = PutObjectRequest.builder()
+                .key(uuid+"_thumbnail")
+                .contentType("image/jpg")
+                .bucket(S3_BUCKET_NAME)
+                .build();
+
+        log.info("thumbnailReq = {}", thumbnailReq);
+        PutObjectResponse putObjectResponseThumbnail;
+
+        try{
+            putObjectResponseThumbnail = s3.putObject(thumbnailReq, RequestBody.fromBytes(thumbnail));
+        } catch (Exception e){
+            throw new RuntimeException(e);
+        }
+
+    }
+
     private Image saveImageMetadata(Image image){
         return imageRepository.save(image);
     }
@@ -79,6 +110,23 @@ public class ImageService {
 
     public List<Image> getImagesByUser(Integer userId){
         return imageRepository.findByUserId(userId);
+    }
+
+    // Convert user uploaded image into a thumbnail, return resulting image as byte array
+    public byte[] generateThumbnail(ImageUploadDTO imageUploadDTO) throws IOException {
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Thumbnails.of(imageUploadDTO.getFile().getInputStream())
+                .size(300, 300)
+                .keepAspectRatio(true)
+                .outputQuality(0.3)
+                .outputFormat("jpg")
+                .toOutputStream(baos);
+        byte[] bytes = baos.toByteArray();
+
+        baos.close();
+
+        return bytes;
     }
 
     public static String constructS3ImageUrl(String key){

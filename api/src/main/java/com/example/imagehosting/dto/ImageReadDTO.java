@@ -18,7 +18,8 @@ public class ImageReadDTO {
     private String title;
     private String uploadedBy;
     private LocalDateTime uploadedOn;
-    private String url;
+    private String urlFullRes;
+    private String urlThumbnail;
     private Visibility visibility;
     private Integer size;
 }

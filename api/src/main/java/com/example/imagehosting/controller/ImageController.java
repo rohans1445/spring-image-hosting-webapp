@@ -14,7 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.example.imagehosting.services.ImageService.constructS3ImageUrl;
@@ -30,17 +32,20 @@ public class ImageController {
     @PostMapping(path = "/images/upload",
             consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<String> uploadFile(@RequestParam(name = "file") MultipartFile file,
+    public ResponseEntity<Map<String, String>> uploadFile(@RequestParam(name = "file") MultipartFile file,
                                             @RequestParam(name = "visibility") Visibility visibility) {
 
+        Map<String, String> result = new HashMap<>();
 
         if(!userService.userHasFreeSpace(file.getSize())){
             throw new InvalidInputException("You do not have enough storage available. Current free space available: "+ (userService.getCurrentUser().getFreeSpaceAvailaible()/1024)/1024 +" MB" );
         }
 
-        Image savedImage = imageService.uploadImageToS3(new ImageUploadDTO(file, visibility));
+        Image savedImage = imageService.saveImage(new ImageUploadDTO(file, visibility));
 
-        return new ResponseEntity<>("UPLOADED " + file.getOriginalFilename(), HttpStatus.CREATED);
+        result.put("message", "Image uploaded");
+
+        return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 
     @GetMapping("/images")
@@ -53,7 +58,8 @@ public class ImageController {
                 .visibility(image.getVisibility())
                 .uploadedOn(image.getUploadedOn())
                 .uploadedBy(image.getUploadedBy().getUsername())
-                .url(constructS3ImageUrl(image.getS3Identifier()))
+                .urlFullRes(constructS3ImageUrl(image.getS3Identifier()))
+                .urlThumbnail(constructS3ImageUrl(image.getS3Identifier())+"_thumbnail")
                 .build()).collect(Collectors.toList());
 
         return new ResponseEntity<>(result, HttpStatus.OK);
@@ -68,7 +74,8 @@ public class ImageController {
                 .size(image.getSize())
                 .visibility(image.getVisibility())
                 .uploadedBy(image.getUploadedBy().getUsername())
-                .url(constructS3ImageUrl(image.getS3Identifier()))
+                .urlFullRes(constructS3ImageUrl(image.getS3Identifier()))
+                .urlThumbnail(constructS3ImageUrl(image.getS3Identifier())+"_thumbnail")
                 .build();
 
         return new ResponseEntity<>(result, HttpStatus.OK);

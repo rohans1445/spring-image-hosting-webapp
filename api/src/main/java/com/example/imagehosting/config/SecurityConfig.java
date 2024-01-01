@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -16,6 +17,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
@@ -37,10 +39,10 @@ public class SecurityConfig {
     public SecurityFilterChain configureHttp(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(configurer ->
                 configurer
+                        .requestMatchers(new AntPathRequestMatcher("/api/auth/**")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/api/images", GET.name())).permitAll()
                         .requestMatchers(POST, "/api/images/upload").authenticated()
-                        .requestMatchers(GET, "/api/images").authenticated()
-                        .requestMatchers(GET, "/api/user/**").authenticated()
-                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/api/user/**", GET.name())).authenticated()
                         .anyRequest().permitAll()
         );
 

@@ -51,7 +51,8 @@ public class UserController {
                 .size(image.getSize())
                 .visibility(image.getVisibility())
                 .uploadedBy(image.getUploadedBy().getUsername())
-                .url(constructS3ImageUrl(image.getS3Identifier()))
+                .urlFullRes(constructS3ImageUrl(image.getS3Identifier()))
+                .urlThumbnail(constructS3ImageUrl(image.getS3Identifier())+"_thumbnail")
                 .build()).collect(Collectors.toList());
 
         return new ResponseEntity<>(result, HttpStatus.OK);
