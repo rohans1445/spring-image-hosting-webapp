@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import jwtDecode from 'jwt-decode';
 import * as moment from 'moment';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { User } from '../model/user.model';
 
@@ -20,12 +20,27 @@ export class AuthService {
 
   userHasLoggedOut = new BehaviorSubject<boolean>(false);
 
+  // Emit an event using this subject when a users property is 
+  // updated using fetchCurrentUserDetailsAndSetLogin() so that the 
+  // code following fetchCurrentUserDetailsAndSetLogin() can be run 
+  // sequentially.
+  currentUserWasUpdated: Subject<boolean> = new Subject<boolean>();
+
   login(usernamePassword: object): Observable<any>{
     return this.http.post<any>(`${environment.baseUrl}/auth/login`, usernamePassword);
   }
 
-  fetchCurrentUserDetails(): Observable<User>{
+  private fetchCurrentUserDetails(): Observable<User>{
     return this.http.get<User>(`${environment.baseUrl}/user/me`);
+  }
+
+  fetchCurrentUserDetailsAndSetLogin() {
+    this.fetchCurrentUserDetails().subscribe({
+      next: res => {
+        localStorage.setItem('currentUser', JSON.stringify(res));
+        this.currentUserWasUpdated.next(true);
+      }
+    })
   }
 
   isLoggedIn(): boolean{

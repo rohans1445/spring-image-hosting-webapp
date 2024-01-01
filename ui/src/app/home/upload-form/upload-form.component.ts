@@ -2,6 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ImageService } from 'src/app/services/image.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-upload-form',
@@ -14,7 +15,8 @@ export class UploadFormComponent implements OnInit {
   visibility: string = 'PRIVATE';
   message = {text: '', color: ''};
 
-  constructor(private imageService: ImageService) { }
+  constructor(private imageService: ImageService,
+    private userService: UserService) { }
 
   ngOnInit(): void {
   }
@@ -30,6 +32,7 @@ export class UploadFormComponent implements OnInit {
         next: res => {
           this.message.text = "Uploaded " + this.uploadedFile!.name;
           this.message.color = 'white';
+          this.userService.storageUpdated.next(true);
         },
         error: (err: HttpErrorResponse) => {
           this.message.color = 'red'

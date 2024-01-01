@@ -14,7 +14,6 @@ export class LoginComponent implements OnInit {
   isLoading = false;
   isError = false;
   loginForm: FormGroup = new FormGroup({});
-  user: string = '';
 
   constructor(private authService: AuthService,
     private router: Router,
@@ -39,13 +38,9 @@ export class LoginComponent implements OnInit {
         this.isLoading = false;
         localStorage.setItem('token', res.token);
         
-        this.authService.fetchCurrentUserDetails().subscribe({
-          next: res => {
-            this.user = JSON.stringify(res);
-            localStorage.setItem('currentUser', JSON.stringify(res));
-            this.router.navigate(['/home']);
-          }
-        })
+        this.authService.fetchCurrentUserDetailsAndSetLogin();
+        this.router.navigate(['/home']);
+
       },
       error: res => {
         this.isLoading = false;
