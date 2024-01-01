@@ -13,7 +13,7 @@ export class HeaderComponent implements OnInit {
 
   isLoggedIn = false;
   currentUser = new User();
-  freeSpace: string = '';
+  totalSpace: string = '';
   occupiedSpace: string = '';
 
   constructor(private authService: AuthService,
@@ -23,7 +23,7 @@ export class HeaderComponent implements OnInit {
     this.isLoggedIn = this.authService.isLoggedIn();
     if(this.isLoggedIn){
       this.currentUser = this.authService.getCurrentUser();
-      this.freeSpace = formatBytes(this.currentUser.freeSpaceAvailable!, 1);
+      this.totalSpace = formatBytes(this.currentUser.assignedCloudStorage!, 1);
       this.occupiedSpace = formatBytes(this.currentUser.assignedCloudStorage! - this.currentUser.freeSpaceAvailable!, 1);
     }
   }

@@ -11,6 +11,7 @@ import { HeaderComponent } from './header/header.component';
 import { HomeComponent } from './home/home.component';
 import { GalleryComponent } from './home/gallery/gallery.component';
 import { ViewerComponent } from './home/viewer/viewer.component';
+import { UploadFormComponent } from './home/upload-form/upload-form.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { ViewerComponent } from './home/viewer/viewer.component';
     HeaderComponent,
     HomeComponent,
     GalleryComponent,
-    ViewerComponent
+    ViewerComponent,
+    UploadFormComponent
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,23 @@
+
+<div class="upload-form-container">
+    <div style="display: none;">
+        <input type="file" id="file-upload" #fileUpload (change)="onFileSelected($event)"> 
+        <input type="radio" id="visibility_private" name="visibility" value="PRIVATE" checked>
+        <input type="radio" id="visibility_public" name="visibility"  value="PUBLIC">
+    </div>
+    <div class="upload-field">
+        <input type="text" [value]="uploadedFile ? uploadedFile.name : 'Select a file'" disabled>
+        <button class="button-custom button-custom-primary" (click)="fileUpload.click()">Browse</button>
+    </div>
+   
+    <div class="radio-group">
+        <div class="radio-left" tabindex="-1" (click)="visibility = 'PRIVATE'" [ngStyle]="{'background-color': visibility === 'PRIVATE' ? 'var(--primary)' : 'var(--dark)'}">
+            <span>Private</span>
+        </div>
+        <div class="radio-right" tabindex="-1" (click)="visibility = 'PUBLIC'" [ngStyle]="{'background-color': visibility === 'PUBLIC' ? 'var(--primary)' : 'var(--dark)'}">
+            <span>Public</span>
+        </div>
+    </div>
+    <button class="button-custom button-custom-primary button-submit" type="button" (click)="onSubmit()">Upload</button>
+    <p *ngIf="message" [ngStyle]="{color: message.color}">{{message.text}}</p>
+</div>

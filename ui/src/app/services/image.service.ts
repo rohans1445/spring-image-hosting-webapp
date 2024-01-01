@@ -16,4 +16,12 @@ export class ImageService {
       return this.http.get<Image[]>(`${environment.baseUrl}/images`);
     }
 
+    uploadImage(imageUpload: { file: any; visibility: string; }){
+      const formData = new FormData();
+      formData.append("file", imageUpload.file);
+      formData.append("visibility", imageUpload.visibility);
+
+      return this.http.post<any>(`${environment.baseUrl}/images/upload`, formData);
+    }
+
 }

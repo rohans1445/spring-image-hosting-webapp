@@ -3,7 +3,8 @@ export class Image {
     title?: string
     uploadedBy?: string
     uploadedOn?: Date
-    url?: string
+    urlFullRes?: string
+    urlThumbnail?: string
     visibility?: string
-    size?: string
+    size?: number
 }
