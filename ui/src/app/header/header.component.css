@@ -62,6 +62,8 @@ a {
     height: 5px;
     display: flex;
     margin-top: 5px;
+    border: 1px solid var(--dark);
+    border-radius: 5px;
 }
 
 .free-storage-bar {

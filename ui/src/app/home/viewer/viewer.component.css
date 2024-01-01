@@ -24,7 +24,7 @@ img {
     height: 90%;
     border-radius: 0.3rem;
     background-color: #222;
-    color: beige;
+    color: var(--accent);
 }
 
 .modal-content {
@@ -63,4 +63,58 @@ img {
         width: 100%;
     }
     
+}
+
+
+.radio-group {
+    cursor: pointer;
+    display: flex;
+    margin-top: 15px;
+    text-align: center;
+    justify-content: center;
+}
+  
+.radio-group div {
+    appearance: none;
+    width: 50%;
+    height: 40px;
+    border: 2px solid var(--accent);
+    outline: none;
+    display: flex;
+    justify-content: center;
+}
+  
+.radio-group div span {
+    margin: auto 0px;
+}
+  
+.radio-group :focus {
+    transition: 0.2s ease-in-out;
+    background-color: var(--accent);
+    color: var(--dark);
+}
+  
+.radio-left {
+    margin: 0px;
+    border-radius: 10px 0px 0px 10px;
+}
+  
+.radio-right {
+    margin: 0px;
+    border-radius: 0px 10px 10px 0px;
+}
+
+.button-custom {
+    cursor: pointer;
+}
+  
+.button-custom-primary {
+    outline: none;
+    appearance: none;
+    width: 100%;
+    height: 40px;
+    border-radius: 10px;
+    border: 0px;
+    color: var(--dark);
+    background-color: var(--accent);
 }

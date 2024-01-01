@@ -19,6 +19,8 @@
             </div>
         </div>
         <div *ngIf="isLoggedIn" style="align-self: center;" class="link">{{currentUser.username}}</div>
-        <a class="action-button" *ngIf="isLoggedIn" (click)="onLogout()">Logout</a>
+        <div style="margin: auto auto; cursor: pointer;">
+            <a class="action-button" *ngIf="isLoggedIn" (click)="onLogout()">Logout</a>
+        </div>
     </div>
 </nav>

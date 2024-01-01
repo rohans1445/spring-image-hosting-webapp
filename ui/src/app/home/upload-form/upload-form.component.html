@@ -6,7 +6,7 @@
         <input type="radio" id="visibility_public" name="visibility"  value="PUBLIC">
     </div>
     <div class="upload-field">
-        <input type="text" [value]="uploadedFile ? uploadedFile.name : 'Select a file'" disabled>
+        <input type="text" [value]="uploadedFile ? uploadedFile.name : 'Select a file (jpeg, png)'" disabled>
         <button class="button-custom button-custom-primary" (click)="fileUpload.click()">Browse</button>
     </div>
    

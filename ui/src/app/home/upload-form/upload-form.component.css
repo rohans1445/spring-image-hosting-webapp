@@ -14,11 +14,11 @@
   width: 70%;
   height: 40px;
   font-size: 14px;
-  background-color: #222;
+  background-color: var(--dark2);
   border-radius: 10px;
-}
-
-.button-pointer {
+  border: none;
+  padding: 0px 10px;
+  color: #8c8c8c;;
 }
 
 .button-custom {
@@ -57,22 +57,19 @@
   appearance: none;
   width: 50%;
   height: 40px;
-  border: 1px solid teal;
+  border: 2px solid teal;
   outline: none;
-}
-
-.radio-group :focus {
-  transition: 0.2s ease-in-out;
-  background-color: teal;
-}
-
-.radio-group div {
   display: flex;
   justify-content: center;
 }
 
 .radio-group div span {
   margin: auto 0px;
+}
+
+.radio-group :focus {
+  transition: 0.2s ease-in-out;
+  background-color: teal;
 }
 
 .radio-left {

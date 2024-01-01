@@ -22,27 +22,38 @@ export class GalleryComponent implements OnInit {
 
   ngOnInit(): void {
 
+    this.loadImages();
+      
+    this.userService.storageUpdated.subscribe({
+      next: res => {
+        console.log('storage updated');
+        this.loadImages();
+      }
+    })
+
+  }
+
+  loadImages(){
     this.route.url.subscribe({
-        next: res => {
-          console.log(JSON.stringify(res));
-          this.currentPath = res[0].path;
+      next: res => {
+        this.currentPath = res[0].path;
 
-          if(this.currentPath === 'home'){
-            this.imageService.getAllImages().subscribe({
-              next: (res) => {
-                this.galleryItems = res;
-              }
-            })
-          } else if(this.currentPath == 'my-images') {
-            this.userService.getUserImages().subscribe({
-              next: res => {
-                this.galleryItems = res;
-              }
-            })
-          }
+        if(this.currentPath === 'home'){
+          this.imageService.getAllImages().subscribe({
+            next: (res) => {
+              this.galleryItems = res;
+            }
+          })
+        } else if(this.currentPath == 'my-images') {
+          this.userService.getUserImages().subscribe({
+            next: res => {
+              this.galleryItems = res;
+            }
+          })
         }
-    });
 
+      }
+    });
   }
 
   onImageClickInGallery(img: Image){

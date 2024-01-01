@@ -8,11 +8,19 @@
         <div class="right-content">
             <h3>{{image.title}}</h3>
             <p style="padding: 0px; margin: 0px;">Uploaded by: {{image.uploadedBy}}</p>
-            <p style="padding: 0px; margin: 0px;">Uploaded on: {{image.uploadedOn}}</p>
+            <p style="padding: 0px; margin: 0px;">Uploaded on: {{image.uploadedOn | date:'dd MMMM yyyy hh:mm a'}}</p>
             <p style="padding: 0px; margin: 0px;">Size: {{fileSize}}</p>
-            <button type="button">Public</button>
-            <button type="button">Private</button>
-            <button type="button">Delete</button>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <div class="radio-group">
+                    <div class="radio-left" tabindex="-1" (click)="onClickVisibility('PRIVATE')" [ngStyle]="{'background-color': image.visibility === 'PRIVATE' ? 'var(--accent)' : 'var(--primary)', 'color': image.visibility === 'PRIVATE' ? 'var(--dark)' : 'var(--accent)'}">
+                        <span>Private</span>
+                    </div>
+                    <div class="radio-right" tabindex="-1" (click)="onClickVisibility('PUBLIC')" [ngStyle]="{'background-color': image.visibility === 'PUBLIC' ? 'var(--accent)' : 'var(--primary)', 'color': image.visibility === 'PUBLIC' ? 'var(--dark)' : 'var(--accent)'}">
+                        <span>Public</span>
+                    </div>
+                </div>
+                <button type="button" class="button-custom button-custom-primary" (click)="onClickDelete()">Delete</button>
+            </div>
         </div>
     </div>
 </div>

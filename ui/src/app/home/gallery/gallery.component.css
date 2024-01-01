@@ -46,9 +46,6 @@ img {
 }
 
 
-.grid-item {
-    /* border: 2px solid red; */
-}
 div.grid-item > div > img:hover {
     transform: translateY(-3px);
     box-shadow: 0 4px 17px rgba(90, 90, 90, 0.35);

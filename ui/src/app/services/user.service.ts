@@ -17,5 +17,13 @@ export class UserService {
     return this.http.get<Image[]>(`${environment.baseUrl}/user/me/images`);
   }
 
+  deleteImage(id: number){
+    return this.http.delete<void>(`${environment.baseUrl}/user/me/images/${id}`);
+  }
+  
+  updateImage(id:number, visibility: string){
+    return this.http.put<void>(`${environment.baseUrl}/user/me/images/${id}`, {visibility: visibility});
+  }
+
 
 }
