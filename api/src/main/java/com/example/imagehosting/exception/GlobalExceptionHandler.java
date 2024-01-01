@@ -58,7 +58,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({ AccessDeniedException.class })
     public ResponseEntity<Object> handleAccessDeniedException(Exception ex, WebRequest request) {
-        return new ResponseEntity<Object>("Access denied message here", new HttpHeaders(), HttpStatus.FORBIDDEN);
+        return new ResponseEntity<Object>("Access denied", new HttpHeaders(), HttpStatus.FORBIDDEN);
     }
 
 }

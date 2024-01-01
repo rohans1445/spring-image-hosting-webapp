@@ -3,9 +3,13 @@ package com.example.imagehosting.services;
 import com.example.imagehosting.config.AppConstants;
 import com.example.imagehosting.config.ApplicationUserDetails;
 import com.example.imagehosting.dto.RegistrationRequest;
+import com.example.imagehosting.entity.Image;
 import com.example.imagehosting.entity.User;
+import com.example.imagehosting.entity.Visibility;
 import com.example.imagehosting.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,8 +17,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 
 import java.math.BigDecimal;
+import java.util.Map;
 import java.util.Optional;
 
 import static com.example.imagehosting.config.AppConstants.DEFAULT_STORAGE_IN_BYTES;
@@ -24,10 +31,17 @@ public class UserService implements UserDetailsService {
 
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
+    private ImageService imageService;
+    private S3Client s3;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository,
+        PasswordEncoder passwordEncoder,
+        @Lazy ImageService imageService,
+        S3Client s3){
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.imageService = imageService;
+        this.s3 = s3;
     }
 
     @Override
@@ -64,5 +78,38 @@ public class UserService implements UserDetailsService {
         User currentUser = getCurrentUser();
         currentUser.setFreeSpaceAvailaible(currentUser.getFreeSpaceAvailaible() - size);
         userRepository.save(currentUser);
+    }
+
+    public void deleteImage(Integer id){
+
+        User currentUser = getCurrentUser();
+        Image imageById = imageService.getImageById(id);
+
+        if(!imageById.getUploadedBy().equals(currentUser))
+            throw new AccessDeniedException("Unauthorized operation");
+
+        //Delete thumbnail
+        s3.deleteObject(DeleteObjectRequest.builder()
+                        .key(imageById.getS3Identifier()+"_thumbnail")
+                        .bucket(AppConstants.S3_BUCKET_NAME)
+                .build());
+
+        //Delete image
+        s3.deleteObject(DeleteObjectRequest.builder()
+                        .key(imageById.getS3Identifier())
+                        .bucket(AppConstants.S3_BUCKET_NAME)
+                .build());
+
+        currentUser.setFreeSpaceAvailaible(currentUser.getFreeSpaceAvailaible() + imageById.getSize());
+
+        userRepository.save(currentUser);
+        imageService.deleteImage(id);
+
+    }
+
+    public void updateImage(Integer id, Map<String, String> update) {
+        Image imageById = imageService.getImageById(id);
+        imageById.setVisibility(Visibility.valueOf(update.get("visibility")));
+        imageService.updateImage(imageById);
     }
 }

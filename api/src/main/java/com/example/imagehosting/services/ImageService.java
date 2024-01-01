@@ -138,4 +138,12 @@ public class ImageService {
         imgOpt.orElseThrow(() -> new InvalidInputException("Cannot find image with ID: " + id));
         return imgOpt.get();
     }
+
+    public void deleteImage(Integer id){
+        imageRepository.deleteById(id);
+    }
+
+    public void updateImage(Image i){
+        imageRepository.save(i);
+    }
 }

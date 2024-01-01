@@ -10,11 +10,11 @@ import com.example.imagehosting.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.example.imagehosting.services.ImageService.constructS3ImageUrl;
@@ -55,6 +55,22 @@ public class UserController {
                 .urlThumbnail(constructS3ImageUrl(image.getS3Identifier())+"_thumbnail")
                 .build()).collect(Collectors.toList());
 
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/me/images/{id}")
+    public ResponseEntity<Map<String, String>> deleteImage(@PathVariable("id") Integer id){
+        Map<String, String> result = new HashMap<>();
+        userService.deleteImage(id);
+        result.put("message", "Image deleted");
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @PutMapping("/me/images/{id}")
+    public ResponseEntity<Map<String, String>> updateImage(@PathVariable("id") Integer id, @RequestBody Map<String, String> map){
+        Map<String, String> result = new HashMap<>();
+        userService.updateImage(id, map);
+        result.put("message", "Image updated");
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
