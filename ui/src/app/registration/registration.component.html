@@ -1,15 +1,19 @@
-<div class="login-container">
-    <form class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+<div class="registration-container">
+    <form class="registration-form" [formGroup]="registrationForm" (submit)="onSubmit()">
         <div class="input-field">
             <label for="username">Username</label>
             <input type="text" name="username" id="username" formControlName="username">
         </div>
         <div class="input-field">
+            <label for="email">Email</label>
+            <input type="email" name="email" id="email" formControlName="email">
+        </div>
+        <div class="input-field">
             <label for="password">Password</label>
             <input type="password" name="password" id="password" formControlName="password">
         </div>
-        <button class="button-custom button-custom-primary button-submit">Sign in</button>
+        <button class="button-custom button-custom-primary button-submit">Sign up</button>
     </form>
-    <a style="color: teal; cursor: pointer;" routerLink="/register">Sign up</a>
+    <a style="color: teal; cursor: pointer;" routerLink="/login">Sign in</a>
     <a style="color: teal; cursor: pointer; margin-left: 10px;" routerLink="/home">Home</a>
 </div>

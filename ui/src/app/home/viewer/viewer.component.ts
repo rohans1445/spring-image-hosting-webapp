@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Image } from 'src/app/model/image.model';
+import { User } from 'src/app/model/user.model';
 import { AuthService } from 'src/app/services/auth.service';
 import { ImageService } from 'src/app/services/image.service';
 import { UserService } from 'src/app/services/user.service';
@@ -17,6 +18,11 @@ export class ViewerComponent implements OnInit {
     private imageService: ImageService) { }
 
   fileSize: string = '';
+  copied: boolean = false;
+  changingVisibility: boolean = false;
+  isLoadingPublic: boolean = false;
+  isLoadingPrivate: boolean = false;
+  currentUser!: User;
   
   @Input()
   image!: Image;
@@ -25,6 +31,7 @@ export class ViewerComponent implements OnInit {
   modalClose = new EventEmitter<void>();
 
   ngOnInit(): void {
+    this.currentUser = this.auth.getCurrentUser();
     this.fileSize = formatBytes(this.image.size!, 1);
   }
 
@@ -45,14 +52,29 @@ export class ViewerComponent implements OnInit {
 
   onClickVisibility(visibility: string){
     if(this.image.visibility === visibility) return;
-
+    this.isLoadingPublic = visibility === 'PUBLIC' ? true : false;
+    this.isLoadingPrivate = visibility === 'PRIVATE' ? true : false;
     this.userService.updateImage(this.image.id!, visibility).subscribe({
       next: res => {
+        this.isLoadingPublic = false;
+        this.isLoadingPrivate = false;
         this.image.visibility = visibility;
         this.imageService.imageChange.next(true);
+      },
+      error: res => {
+        this.isLoadingPublic = false;
+        this.isLoadingPrivate = false;
       }
     });    
 
+  }
+
+  onCopy(){
+    navigator.clipboard.writeText(this.image.urlFullRes!);
+    this.copied = true;
+    setTimeout(() => {
+      this.copied = false;
+    }, 3000);
   }
 
 }

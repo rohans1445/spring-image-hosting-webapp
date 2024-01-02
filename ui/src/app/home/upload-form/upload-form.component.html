@@ -18,6 +18,6 @@
             <span>Public</span>
         </div>
     </div>
-    <button class="button-custom button-custom-primary button-submit" type="button" (click)="onSubmit()">Upload</button>
+    <button class="button-custom button-custom-primary button-submit" type="button" (click)="onSubmit()">Upload <span *ngIf="isLoading" class="loader"></span></button>
     <p *ngIf="message" [ngStyle]="{color: message.color}">{{message.text}}</p>
 </div>

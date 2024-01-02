@@ -14,6 +14,7 @@ export class UploadFormComponent implements OnInit {
   uploadedFile?: File;
   visibility: string = 'PRIVATE';
   message = {text: '', color: ''};
+  isLoading: boolean = false;
 
   constructor(private imageService: ImageService,
     private userService: UserService) { }
@@ -26,24 +27,27 @@ export class UploadFormComponent implements OnInit {
   }
 
   onSubmit(){
-
+    this.isLoading = true;
     if(this.uploadedFile){
       this.imageService.uploadImage({file: this.uploadedFile, visibility: this.visibility}).subscribe({
         next: res => {
+          this.isLoading = false;
           this.message.text = "Uploaded " + this.uploadedFile!.name;
           this.message.color = 'white';
           this.userService.storageUpdated.next(true);
         },
         error: (err: HttpErrorResponse) => {
+          this.isLoading = false;
           this.message.color = 'red'
           if(err.status === 500){
             this.message.text = 'Could not upload image - Internal Server Error';
           } else if (err.status === 400){
-            this.message.text = 'You have do not have any free storage left';
+            this.message.text = 'You have do not have enough free storage left';
           }
         }
       });
     } else {
+      this.isLoading = false;
       this.message.text = 'Please select a file'
     }
 

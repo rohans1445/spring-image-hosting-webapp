@@ -32,6 +32,10 @@ export class AuthService {
     return this.http.post<any>(`${environment.baseUrl}/auth/login`, usernamePassword);
   }
 
+  register(userDetails: object): Observable<any>{
+    return this.http.post<any>(`${environment.baseUrl}/auth/register`, userDetails);
+  }
+
   fetchCurrentUserDetails(): Observable<User>{
     return this.http.get<User>(`${environment.baseUrl}/user/me`);
   }

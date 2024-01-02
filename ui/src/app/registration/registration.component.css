@@ -1,9 +1,9 @@
-.login-container {
+.registration-container {
     width: 20rem;
     margin: 50px auto;
 }
 
-.login-form {
+.registration-form {
     display: flex;
     flex-direction: column;
     gap: 10px;

@@ -2,7 +2,7 @@
     <div class="grid-item grid-item-1" *ngFor="let img of galleryItems">
         <div class="grid-item-content">
             <img [src]="img.urlThumbnail" (click)="onImageClickInGallery(img)">
-            <p>{{img.title + " | " + img.uploadedBy}}</p>
+            <p>{{img.title + " | " + img.uploadedBy}} <span *ngIf="img.visibility === 'PRIVATE'">🔒</span></p>
         </div>
     </div>
 </div>

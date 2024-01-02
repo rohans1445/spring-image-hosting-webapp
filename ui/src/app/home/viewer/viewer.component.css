@@ -118,3 +118,7 @@ img {
     color: var(--dark);
     background-color: var(--accent);
 }
+
+.copy-button {
+    cursor: pointer;
+}
