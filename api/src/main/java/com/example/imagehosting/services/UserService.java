@@ -18,9 +18,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
+import software.amazon.awssdk.services.s3.model.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -56,6 +57,7 @@ public class UserService implements UserDetailsService {
         user.setUsername(registrationRequest.getUsername());
         user.setEmail(registrationRequest.getEmail());
         user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
+        user.setAssignedCloudStorage(DEFAULT_STORAGE_IN_BYTES);
         user.setFreeSpaceAvailaible(DEFAULT_STORAGE_IN_BYTES);
         user.setRoles("ROLE_USER");
 
@@ -111,5 +113,23 @@ public class UserService implements UserDetailsService {
         Image imageById = imageService.getImageById(id);
         imageById.setVisibility(Visibility.valueOf(update.get("visibility")));
         imageService.updateImage(imageById);
+
+        if(imageById.getVisibility().equals(Visibility.PRIVATE)){
+            List.of(imageById.getS3Identifier(), imageById.getS3Identifier()+"_thumbnail").forEach(object -> {
+                s3.putObjectAcl(PutObjectAclRequest.builder()
+                                .key(object)
+                                .bucket(AppConstants.S3_BUCKET_NAME)
+                                .acl(ObjectCannedACL.PRIVATE)
+                            .build());
+            });
+        } else {
+            List.of(imageById.getS3Identifier(), imageById.getS3Identifier()+"_thumbnail").forEach(object -> {
+                s3.putObjectAcl(PutObjectAclRequest.builder()
+                        .key(object)
+                        .bucket(AppConstants.S3_BUCKET_NAME)
+                        .acl(ObjectCannedACL.PUBLIC_READ)
+                        .build());
+            });
+        }
     }
 }

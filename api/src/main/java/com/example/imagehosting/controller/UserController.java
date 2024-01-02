@@ -42,20 +42,9 @@ public class UserController {
     @GetMapping("/me/images")
     public ResponseEntity<List<ImageReadDTO>> getMyImages() {
         User currentUser = userService.getCurrentUser();
-        List<Image> imagesByUser = imageService.getImagesByUser(currentUser.getId());
+        List<ImageReadDTO> imagesByUser = imageService.getImagesByUser(currentUser.getId());
 
-        List<ImageReadDTO> result = imagesByUser.stream().map(image -> ImageReadDTO.builder()
-                .id(image.getId())
-                .title(image.getTitle())
-                .uploadedOn(image.getUploadedOn())
-                .size(image.getSize())
-                .visibility(image.getVisibility())
-                .uploadedBy(image.getUploadedBy().getUsername())
-                .urlFullRes(constructS3ImageUrl(image.getS3Identifier()))
-                .urlThumbnail(constructS3ImageUrl(image.getS3Identifier())+"_thumbnail")
-                .build()).collect(Collectors.toList());
-
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        return new ResponseEntity<>(imagesByUser, HttpStatus.OK);
     }
 
     @DeleteMapping("/me/images/{id}")
