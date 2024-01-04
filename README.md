@@ -7,7 +7,21 @@ Gif demo:
 
 ---
 
-<br><br>
+<br>
+
+Overview
+- REST API made using Spring Boot
+- UI made using Angular
+- Images stored in S3 bucket
+- Image metadata stored in SQL DB
+
+Features
+- Image viewing/uploading to gallery
+- User controlled image visibility settings (Public/Private images)
+- Pre-defined free cloud storage is assigned to every user (default 10MB)
+- Grid layout for gallery
+
+<br>
 
 ![endpoints](https://github.com/rohans1445/spring-image-hosting-webapp/assets/101462549/c09892fe-fbb3-4fd8-be55-922b23a70362)
 
