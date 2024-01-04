@@ -2,7 +2,10 @@
 
 Image hosting web application made using Spring Boot and Angular
 
-<img width="960" alt="Screenshot 2024-01-02 171636" src="https://github.com/rohans1445/spring-image-hosting-webapp/assets/101462549/547629d2-ff26-472c-a4d7-c52818cc7481">
+Gif demo:
+![gifdemo](https://github.com/rohans1445/spring-image-hosting-webapp/assets/101462549/7aab5129-2d76-4788-ad26-4ce74458a938)
+
+---
 
 <br><br>
 
@@ -12,5 +15,5 @@ Image hosting web application made using Spring Boot and Angular
 
 ![acl](https://github.com/rohans1445/spring-image-hosting-webapp/assets/101462549/ecd9c27d-ec53-4582-952a-844506402a54)
 
-
-
+Screenshots:
+<img width="960" alt="Screenshot 2024-01-02 171636" src="https://github.com/rohans1445/spring-image-hosting-webapp/assets/101462549/547629d2-ff26-472c-a4d7-c52818cc7481">
